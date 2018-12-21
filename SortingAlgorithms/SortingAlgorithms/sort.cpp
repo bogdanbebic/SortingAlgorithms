@@ -51,8 +51,3 @@ void sorting::shell_sort(std::vector<T>& v, bool(*cmp)(T lhs, T rhs)) {
 		}
 	}
 }
-
-template<typename T>
-void sorting::insertion_sort(std::vector<T>& v, bool(*cmp)(T lhs, T rhs)) {
-
-}
