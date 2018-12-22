@@ -2,6 +2,7 @@
 #ifndef _SORT_H_
 #define _SORT_H_
 #include <vector>
+#include <algorithm>
 
 namespace  sorting {
 
@@ -154,6 +155,38 @@ namespace  sorting {
 		}
 	}
 
+	template<typename T>
+	void merge_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
+		for (auto current_size = 1U; current_size <= v.size() - 1; current_size *= 2) {
+			for (auto left_start = 0U; left_start < v.size() - 1; left_start += 2 * current_size) {
+				const auto mid = std::min(left_start + current_size - 1, v.size() - 1);
+				auto right_end = std::min(left_start + 2 * current_size - 1, v.size() - 1);
+
+				std::vector<T> temp;
+				temp.reserve(right_end - left_start + 1);
+				auto left_iter = left_start, right_iter = mid + 1;
+				while (left_iter <= mid && right_iter <= right_end) {
+					if (!(*cmp)(v[left_iter], v[right_iter])) {
+						temp.push_back(v[right_iter++]);
+					}
+					else {
+						temp.push_back(v[left_iter++]);
+					}
+				}
+
+				while (left_iter <= mid) {
+					temp.push_back(v[left_iter++]);
+				}
+				while (right_iter <= right_end) {
+					temp.push_back(v[right_iter++]);
+				}
+
+				for (auto i = left_start, j = 0U; i <= right_end; i++) {
+					v[i] = temp[j++];
+				}
+			}
+		}
+	}
 
 }
 #endif 

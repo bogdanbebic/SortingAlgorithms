@@ -22,6 +22,7 @@ int main(int argc, char* argv[]) {
 	// sorting::shaker_sort(test_vec, less);
 	// sorting::selection_sort(test_vec, less);
 	// sorting::bubble_sort(test_vec, less);
+	// sorting::merge_sort(test_vec, less);
 
 	for (auto elem : test_vec) {
 		std::cout << elem << ' ';
