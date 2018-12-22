@@ -16,7 +16,10 @@ int main(int argc, char* argv[]) {
 	std::cout << std::endl;
 
 	// Test of sort function on test_vec
-	sorting::insertion_sort<int>(test_vec, less);
+	// sorting::insertion_sort<int>(test_vec, less);
+	// sorting::shell_sort<int>(test_vec, less);
+	// sorting::heap_sort(test_vec, less);
+	// sorting::shaker_sort(test_vec, less);
 
 	for (auto elem : test_vec) {
 		std::cout << elem << ' ';
