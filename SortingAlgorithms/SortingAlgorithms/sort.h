@@ -124,5 +124,36 @@ namespace  sorting {
 			start = new_start;
 		}
 	}
+
+	template<typename T>
+	void bubble_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
+		for (auto i = 0U; i < v.size(); i++) {
+			for (int j = v.size() - 2; j >= 0; j--) {
+				if ((*cmp)(v[j + 1], v[j])) {
+					auto temp = v[j + 1];
+					v[j + 1] = v[j];
+					v[j] = temp;
+				}
+			}
+		}
+	}
+
+	template<typename T>
+	void selection_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
+		for (auto i = 0U; i < v.size() - 1; i++) {
+			auto min = v[i];
+			auto min_index = i;
+			for (auto j = i + 1; j < v.size(); j++) {
+				if ((*cmp)(v[j], min)) {
+					min = v[j];
+					min_index = j;
+				}
+			}
+			v[min_index] = v[i];
+			v[i] = min;
+		}
+	}
+
+
 }
 #endif 

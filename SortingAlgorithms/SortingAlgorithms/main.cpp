@@ -20,6 +20,8 @@ int main(int argc, char* argv[]) {
 	// sorting::shell_sort<int>(test_vec, less);
 	// sorting::heap_sort(test_vec, less);
 	// sorting::shaker_sort(test_vec, less);
+	// sorting::selection_sort(test_vec, less);
+	// sorting::bubble_sort(test_vec, less);
 
 	for (auto elem : test_vec) {
 		std::cout << elem << ' ';
