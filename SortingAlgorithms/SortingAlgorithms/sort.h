@@ -183,12 +183,21 @@ namespace  sorting {
 		}
 	}
 
-
+	/**
+	* \brief Function used for finding the pivot, and sorting his position
+	* \param v Vector that is sorted
+	* \param start beginning of the current part of the vector
+	* \param end ending of the current part of the vector
+	* \param cmp Function that compares two elements (cmp should return lhs < rhs for ascending sort)
+	*/
 	template<typename T>
 	int find_pivot(std::vector<T>& v, int start, int end, bool(*cmp) (const T & lhs, const T & rhs)){
 		auto i = start;
 		auto j = end;
 		T pivot = v[i];
+		sf::RectangleShape rect = gui::rect_v[i];
+		gui::rect_v[i].setFillColor(sf::Color::Red);
+		gui::update_simulation();
 		while (i < j) {
 			while (!cmp(pivot, v[i]) && i < j)
 				i++;
@@ -198,13 +207,32 @@ namespace  sorting {
 				T tmp = v[i];
 				v[i] = v[j];
 				v[j] = tmp;
+				sf::RectangleShape tmp_rect = gui::rect_v[i];
+				gui::changePos(gui::rect_v[i], gui::rect_v[j]);
+				gui::changePos(gui::rect_v[j], tmp_rect);
 			}
+			gui::rect_v[i].setFillColor(sf::Color::Red);
+			gui::rect_v[j].setFillColor(sf::Color::Red);
+			gui::update_simulation();
+			gui::rect_v[i].setFillColor(sf::Color::White);
+			gui::rect_v[j].setFillColor(sf::Color::White);
 		}
 		v[start] = v[j];
 		v[j] = pivot;
+		gui::changePos(gui::rect_v[start], gui::rect_v[j]);
+		gui::changePos(gui::rect_v[j], rect);
+		gui::update_simulation();
+		gui::rect_v[i].setFillColor(sf::Color::White);
 		return j;
 	}
-	
+
+	/**
+	* \brief Recursive function used for quick sort
+	* \param v Vector that is sorted
+	* \param start beginning of the current part of the vector
+	* \param end ending of the current part of the vector
+	* \param cmp Function that compares two elements (cmp should return lhs < rhs for ascending sort)
+	*/
 	template<typename T>
 	void quick_recursive(std::vector<T>& v, int start, int end, bool(*cmp) (const T & lhs, const T & rhs)) {
 		if (start < end) {

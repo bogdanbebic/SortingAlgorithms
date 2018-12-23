@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 			// TODO: Benchmarking of all sorts 
 		//}
 
-		//simulate_sort(test_vec, gui::Shell);
+		simulate_sort(test_vec, gui::Quick);
 		// sorting::quick_sort(test_vec, sorting::less);
 		// print_array(test_vec);
 

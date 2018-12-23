@@ -41,6 +41,8 @@ void gui::simulate_sort(std::vector<int>& v, gui::SelectedSort selected_sort)
 	case Shaker:
 		sorting::shaker_sort<int>(v, sorting::less);
 		break;
+	case Quick:
+		sorting::quick_sort(v, sorting::less);
 	default:
 		break;
 	}
