@@ -22,7 +22,7 @@ void gui::simulate_sort(std::vector<int>& v, gui::SelectedSort selected_sort)
 		if (i > max) max = i;
 	rect_v.clear();
 	for (size_t i = 0; i < v.size(); i++) {
-		sf::RectangleShape rect(sf::Vector2f(static_cast<float>(width), static_cast<float>(v[i] * max_height / max)));
+		sf::RectangleShape rect(sf::Vector2f(static_cast<float>(width), static_cast<float>(v[i]) * max_height / max));
 		rect_v.push_back(rect);
 		rect_v[i].setFillColor(sf::Color::White);
 		rect_v[i].setPosition(static_cast<float>(i * width), static_cast<float>(268 + max_height - rect_v[i].getSize().y));
@@ -54,7 +54,7 @@ void gui::update_simulation() {
 	for (const auto& i : rect_v)
 		window.draw(i);
 	window.display();
-	sleep(sf::milliseconds(200));
+	sleep(sf::milliseconds(100));
 }
 
 void gui::changePos(sf::RectangleShape& dst, sf::RectangleShape& src) {

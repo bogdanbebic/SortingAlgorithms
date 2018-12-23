@@ -11,7 +11,7 @@ void print_array(std::vector<int>& v) {
 }
 
 
-std::vector<int> test_vec = { 8, 1, 17, 3, 20, 5, 19, 16, 2, 15, 6, 18, 4, 11, 7, 0, 12, 9, 10, 13};
+std::vector<int> test_vec = {20, 9, 3, 11, 23, 25, 24, 26, 7, 17, 14, 10, 18, 21, 2, 4, 27, 30, 6, 12, 16, 19, 8, 22, 5, 1, 28, 29, 15, 13};
 
 int main(int argc, char* argv[]) {
 	//gui::hide_console();
@@ -63,9 +63,7 @@ int main(int argc, char* argv[]) {
 			// TODO: Benchmarking of all sorts 
 		//}
 
-		simulate_sort(test_vec, gui::Quick);
-		// sorting::quick_sort(test_vec, sorting::less);
-		// print_array(test_vec);
+		simulate_sort(test_vec, gui::Heap);
 
 		gui::window.clear();
 		gui::window.draw(header);
