@@ -1,6 +1,7 @@
 #include "graphics.h"
 #include "graphic_sort.h"
-
+#include "sort.h"
+#include <string>
 
 std::vector<sf::RectangleShape> gui::rect_v;
 sf::RenderWindow gui::window(sf::VideoMode(1024, 768), "Sorting Algorithms Visualization and Benchmarking");
@@ -137,28 +138,28 @@ void gui::simulate_sort(std::vector<int>& v, gui::SelectedSort selected_sort)
 	switch (selected_sort)
 	{
 	case Insertion:
-		gui_sorting::insertion_sort<int>(v, gui_sorting::less);
+		gui_sorting::insertion_sort<int>(v, sorting::less);
 		break;
 	case Heap:
-		gui_sorting::heap_sort<int>(v, gui_sorting::less);
+		gui_sorting::heap_sort<int>(v, sorting::less);
 		break;
 	case Shell:
-		gui_sorting::shell_sort<int>(v, gui_sorting::less);
+		gui_sorting::shell_sort<int>(v, sorting::less);
 		break;
 	case Shaker:
-		gui_sorting::shaker_sort<int>(v, gui_sorting::less);
+		gui_sorting::shaker_sort<int>(v, sorting::less);
 		break;
 	case Quick:
-		gui_sorting::quick_sort(v, gui_sorting::less);
+		gui_sorting::quick_sort(v, sorting::less);
 		break;
 	case Bubble:
-		gui_sorting::bubble_sort(v, gui_sorting::less);
+		gui_sorting::bubble_sort(v, sorting::less);
 		break;
 	case Selection:
-		gui_sorting::selection_sort(v, gui_sorting::less);
+		gui_sorting::selection_sort(v, sorting::less);
 		break;
 	case Merge:
-		gui_sorting::merge_sort(v, gui_sorting::less);
+		gui_sorting::merge_sort(v, sorting::less);
 		break;
 	default:
 		break;
@@ -191,4 +192,51 @@ void gui::update_simulation() {
 void gui::changePos(sf::RectangleShape& dst, sf::RectangleShape& src) {
 	dst.setSize(src.getSize());
 	dst.setPosition(sf::Vector2f(dst.getPosition().x, src.getPosition().y));
+}
+
+void gui::benchmark_sort(std::vector<double>& runtime, std::vector<sf::Text>& text_rects) {
+	std::vector<sf::Text> time_text;
+	exit_sprite.setPosition(sf::Vector2f(435, 630));
+	float start_height = 80;
+	for (auto i = 0U; i < runtime.size(); i++) {
+		time_text.emplace_back(sf::Text(std::to_string(runtime[i]), font));
+		time_text[i].setStyle(sf::Text::Bold);
+		time_text[i].setFillColor(sf::Color::White);
+		time_text[i].setPosition(640, start_height + i * 50);
+	}
+
+	window.clear();
+	update_vec(text_rects);
+	update_vec(time_text);
+	sf::Text sorts_header("Sorts:", font);
+	sorts_header.setStyle(sf::Text::Bold);
+	sorts_header.setCharacterSize(40);
+	sorts_header.setFillColor(sf::Color::White);
+	sorts_header.setPosition(140, 10);
+	window.draw(sorts_header);
+	sf::Text time_header("Time (ms):", font);
+	time_header.setStyle(sf::Text::Bold);
+	time_header.setCharacterSize(40);
+	time_header.setFillColor(sf::Color::White);
+	time_header.setPosition(640, 10);
+	window.draw(time_header);
+	window.draw(exit_sprite);
+	window.display();
+	
+	sf::Event event;
+	while (true) {
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed) {
+				window.close();
+				throw ProgramExit();
+			}
+			if (event.type == sf::Event::MouseButtonPressed) {
+				if (event.mouseButton.x > exit_sprite.getPosition().x && event.mouseButton.y > exit_sprite.getPosition().y) {
+					if (event.mouseButton.x < exit_sprite.getPosition().x + 135 && event.mouseButton.y < exit_sprite.getPosition().y + 82) {
+						throw ExitBenchmark();
+					}
+				}
+			}
+		}
+	}
 }

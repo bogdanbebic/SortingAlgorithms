@@ -11,6 +11,9 @@ class ProgramExit : public std::exception
 class ExitSim : public std::exception
 {};
 
+class ExitBenchmark : public std::exception
+{};
+
 namespace gui {
 	extern std::vector<sf::RectangleShape> rect_v;
 	extern sf::RenderWindow window;
@@ -54,5 +57,7 @@ namespace gui {
 	void simulate_sort(std::vector<int>& v, gui::SelectedSort selected_sort);
 	void update_simulation();
 	void changePos(sf::RectangleShape& dst, sf::RectangleShape& src);
+
+	void benchmark_sort(std::vector<double>& runtime, std::vector<sf::Text>& text_rects);
 }
 #endif

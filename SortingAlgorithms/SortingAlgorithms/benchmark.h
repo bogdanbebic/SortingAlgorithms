@@ -4,16 +4,16 @@
 
 #include <vector>
 #include <chrono>
+#include "graphics.h"
 
 
 namespace benchmark_int {
-	extern std::vector<int> test_vec_random;
-	extern std::vector<int> test_vec_nearly_sorted;
-	extern std::vector<int> test_vec_sorted;
-	extern std::vector<int> test_vec_reverse_sorted;
-	extern std::vector<int> test_vec_few_distinct;
+	extern std::vector<std::vector<int>> test_vectors;
 
-	void init_test_vectors(const int n, const int few_sorted_param);
+	extern void(*sort_func[gui::NumOfSorts])(std::vector<int>&, bool(*cmp)(const int&, const int&));
+	extern std::vector<double> runtime;
+
+	void init_test_vectors(const int n, const int few_sorted_param = 10, const int nearly_sorted_param = 3);
 
 }
 

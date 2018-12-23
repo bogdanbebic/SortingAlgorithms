@@ -6,18 +6,6 @@
 #include "graphics.h"
 
 namespace  gui_sorting {
-
-	/**
-	* \brief compares two integers
-	* \param lhs first integer
-	* \param rhs second integer
-	* \return true if lhs is smaller than rhs, otherwise returns false
-	*/
-	inline bool less(const int & lhs, const int & rhs) {
-		return lhs < rhs;
-	}
-
-
 	/**
 	 * \brief gap sequence used for shell sort
 	 */
@@ -63,16 +51,14 @@ namespace  gui_sorting {
 	void insertion_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
 		gui::update_simulation();
 		for (auto i = 1U; i < v.size(); i++) {
-			for (int j = i - 1; j >= 0; j--) {
+			for (int j = i - 1; j >= 0 && (*cmp)(v[j + 1], v[j]); j--) {
 				gui::rect_v[j].setFillColor(sf::Color::Red);
-				if ((*cmp)(v[j + 1], v[j])) {
-					auto temp = v[j];
-					v[j] = v[j + 1];
-					v[j + 1] = temp;
-					auto rect = gui::rect_v[j];
-					gui::changePos(gui::rect_v[j], gui::rect_v[j + 1]);
-					gui::changePos(gui::rect_v[j + 1], rect);
-				}
+				auto temp = v[j];
+				v[j] = v[j + 1];
+				v[j + 1] = temp;
+				auto rect = gui::rect_v[j];
+				gui::changePos(gui::rect_v[j], gui::rect_v[j + 1]);
+				gui::changePos(gui::rect_v[j + 1], rect);
 				gui::update_simulation();
 				gui::rect_v[j].setFillColor(sf::Color::White);
 			}
@@ -333,7 +319,7 @@ namespace  gui_sorting {
 						tmp_rect.push_back(gui::rect_v[left_iter]);
 						temp.push_back(v[left_iter++]);
 					}
-					gui::update_simulation();
+					//gui::update_simulation();
 				}
 
 				while (left_iter <= mid) {
@@ -349,7 +335,9 @@ namespace  gui_sorting {
 
 				for (auto i = left_start, j = 0U; i <= right_end; i++) {
 					gui::changePos(gui::rect_v[i], tmp_rect[j]);
+					gui::rect_v[i].setFillColor(sf::Color::Red);
 					gui::update_simulation();
+					gui::rect_v[i].setFillColor(sf::Color::White);
 					v[i] = temp[j++];
 				}
 			}

@@ -15,6 +15,9 @@ void print_array(std::vector<int>& v) {
 
 std::vector<int> test_vec = {20, 9, 3, 11, 23, 25, 24, 26, 7, 17, 14, 10, 18, 21, 2, 4, 27, 30, 6, 12, 16, 19, 8, 22, 5, 1, 28, 29, 15, 13};
 
+const int size_of_test_benchmark = 100;
+
+
 int main(int argc, char* argv[]) {
 	gui::hide_console();
 	gui::window.setFramerateLimit(60);
@@ -24,7 +27,7 @@ int main(int argc, char* argv[]) {
 	gui::SelectedType selected_type = gui::NoType;
 
 	// Vector with flags for types of vector that will be benchmarked
-	bool checkup_vector[gui::NumOfTypes] = {false, false, false, false, false};
+	bool checkup_vector[gui::NumOfTypes] = {false};
 
 	gui::start_btn.loadFromFile("start_btn.png");
 	gui::stop_btn.loadFromFile("stop_btn.png");
@@ -33,6 +36,10 @@ int main(int argc, char* argv[]) {
 	gui::check_off.loadFromFile("check_box_off.png");
 	gui::radio_on.loadFromFile("radio_btn_on.png");
 	gui::radio_off.loadFromFile("radio_btn_off.png");
+
+	sf::RectangleShape separator_line(sf::Vector2f(3, 768));
+	separator_line.setPosition(sf::Vector2f(511, 0));
+	separator_line.setFillColor(sf::Color::White);
 
 	std::vector<sf::Text> sort_txt_rect;
 	std::vector<sf::Text> sort_txt_type;
@@ -121,18 +128,47 @@ int main(int argc, char* argv[]) {
 				catch(ExitSim&) {}
 				sort_txt_rect[previous_sort].setFillColor(sf::Color::White);
 				radio_btn[previous_sort].setTexture(gui::radio_off);
-				selected_sort = gui::None;
+				previous_sort = gui::None;
 				visualization = false;
 			}
-			if (benchmarking && selected_type != gui::NoType) {
-				// TODO: BENCHMARKING
-				// benchmark::measure_time(sorting::insertion_sort, test_vec, gui_sorting::less).count(); // <- returns number of miliseconds
+
+			if (benchmarking) {
+				benchmark_int::runtime = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+				benchmark_int::init_test_vectors(size_of_test_benchmark);
+				for (auto i = 0; i < gui::NumOfTypes; i++) {
+					if (checkup_vector[i]) {
+						for (auto j = 0; j < gui::NumOfSorts; j++) {
+							benchmark_int::runtime[j] += benchmark::measure_time(benchmark_int::sort_func[j], benchmark_int::test_vectors[i], sorting::less).count();
+						}
+					}
+				}
+				for (auto runtime : benchmark_int::runtime) {
+					std::cout << runtime << std::endl;
+				}
+
+				// absolutely unnecessary, but so is my life :'), jk, I'm good
+				gui::window.clear();
+				sf::Text loading("LoAdIn'", gui::font);
+				loading.setStyle(sf::Text::Bold);
+				loading.setCharacterSize(40);
+				loading.setFillColor(sf::Color::White);
+				loading.setPosition(435, 320);
+				gui::window.draw(loading);
+				gui::window.display();
+				sleep(sf::milliseconds(3309));
+				try {
+					gui::benchmark_sort(benchmark_int::runtime, sort_txt_rect);
+				}
+				catch(ExitBenchmark&) {}
+				gui::exit_sprite.setPosition(sf::Vector2f(850, 50));
+				benchmarking = false;
 			}
 
 			
 
 			gui::window.clear();
 			//gui::window.draw(header);
+			gui::window.draw(separator_line);
 			gui::window.draw(sort_header);
 			gui::window.draw(type_header);
 			gui::update_vec(sort_txt_rect);
