@@ -5,6 +5,19 @@
 #include <vector>
 #include <chrono>
 
+
+namespace benchmark_int {
+	extern std::vector<int> test_vec_random;
+	extern std::vector<int> test_vec_nearly_sorted;
+	extern std::vector<int> test_vec_sorted;
+	extern std::vector<int> test_vec_reverse_sorted;
+	extern std::vector<int> test_vec_few_distinct;
+
+	void init_test_vectors(const int n, const int few_sorted_param);
+
+}
+
+
 namespace benchmark {
 	
 	template <typename T>

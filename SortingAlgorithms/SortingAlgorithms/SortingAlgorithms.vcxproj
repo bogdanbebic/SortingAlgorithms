@@ -132,6 +132,7 @@
     <ClInclude Include="sort.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="benchmark.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sort.cpp" />
