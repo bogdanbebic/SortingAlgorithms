@@ -127,7 +127,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />
-    <ClInclude Include="sort.h" />
+    <ClInclude Include="graphic_sort.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="graphics.cpp" />
