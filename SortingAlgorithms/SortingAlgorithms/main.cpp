@@ -2,6 +2,8 @@
 #include <vector>
 #include "graphics.h"
 #include "graphic_sort.h"
+#include "benchmark.h"
+#include "sort.h"
 
 void print_array(std::vector<int>& v) {
 	for (auto elem : v) {
@@ -122,8 +124,9 @@ int main(int argc, char* argv[]) {
 				selected_sort = gui::None;
 				visualization = false;
 			}
-			 if (benchmarking && selected_type != gui::NoType) {
-				 // TODO: BENCHMARKING 
+			if (benchmarking && selected_type != gui::NoType) {
+				// TODO: BENCHMARKING
+				// benchmark::measure_time(sorting::insertion_sort, test_vec, gui_sorting::less).count(); // <- returns number of miliseconds
 			}
 
 			

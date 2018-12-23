@@ -126,6 +126,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="benchmark.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="graphic_sort.h" />
     <ClInclude Include="sort.h" />
