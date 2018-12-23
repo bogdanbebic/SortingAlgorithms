@@ -4,7 +4,7 @@
 #include <vector>
 #include "graphics.h"
 
-namespace  sorting {
+namespace  gui_sorting {
 
 	/**
 	* \brief compares two integers

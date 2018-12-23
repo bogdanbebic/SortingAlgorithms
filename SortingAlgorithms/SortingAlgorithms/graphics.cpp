@@ -1,8 +1,8 @@
 #include "graphics.h"
-#include "sort.h"
+#include "graphic_sort.h"
 
 std::vector<sf::RectangleShape> gui::rect_v;
-sf::RenderWindow gui::window(sf::VideoMode(1024, 768), "Sorting Algorithms Visualization and Benchmarking");
+sf::RenderWindow gui::window(sf::VideoMode(1024, 768), "gui_sorting Algorithms Visualization and Benchmarking");
 
 
 bool gui::is_inside_shape(const sf::Event& e, const sf::RectangleShape& rect) {
@@ -30,19 +30,19 @@ void gui::simulate_sort(std::vector<int>& v, gui::SelectedSort selected_sort)
 	switch (selected_sort)
 	{
 	case Insertion:
-		sorting::insertion_sort<int>(v, sorting::less);
+		gui_sorting::insertion_sort<int>(v, gui_sorting::less);
 		break;
 	case Heap:
-		sorting::heap_sort<int>(v, sorting::less);
+		gui_sorting::heap_sort<int>(v, gui_sorting::less);
 		break;
 	case Shell:
-		sorting::shell_sort<int>(v, sorting::less);
+		gui_sorting::shell_sort<int>(v, gui_sorting::less);
 		break;
 	case Shaker:
-		sorting::shaker_sort<int>(v, sorting::less);
+		gui_sorting::shaker_sort<int>(v, gui_sorting::less);
 		break;
 	case Quick:
-		sorting::quick_sort(v, sorting::less);
+		gui_sorting::quick_sort(v, gui_sorting::less);
 	default:
 		break;
 	}

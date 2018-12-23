@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "graphics.h"
-#include "sort.h"
+#include "graphic_sort.h"
 
 void print_array(std::vector<int>& v) {
 	for (auto elem : v) {

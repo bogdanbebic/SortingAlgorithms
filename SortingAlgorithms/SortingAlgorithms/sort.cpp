@@ -1,10 +1,10 @@
-#include "sort.h"
+#include "graphic_sort.h"
 
 /**\file sort.cpp
- * \brief Definitions of sorting functions
+ * \brief Definitions of gui_sorting functions
  */
 
-std::vector<int> sorting::ciura_gap_sequence{
+std::vector<int> gui_sorting::ciura_gap_sequence{
 	1577,
 	701,
 	301,
