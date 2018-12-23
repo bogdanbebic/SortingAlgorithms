@@ -4,6 +4,7 @@
 #include "graphic_sort.h"
 #include "benchmark.h"
 #include "sort.h"
+#include <random>
 
 void print_array(std::vector<int>& v) {
 	for (auto elem : v) {
@@ -13,9 +14,9 @@ void print_array(std::vector<int>& v) {
 }
 
 
-std::vector<int> test_vec = {20, 9, 3, 11, 23, 25, 24, 26, 7, 17, 14, 10, 18, 21, 2, 4, 27, 30, 6, 12, 16, 19, 8, 22, 5, 1, 28, 29, 15, 13};
+std::vector<int> test_vec;
 
-const int size_of_test_benchmark = 100;
+const int size_of_test_benchmark = 1000;
 
 
 int main(int argc, char* argv[]) {
@@ -25,6 +26,11 @@ int main(int argc, char* argv[]) {
 	bool visualization = false, benchmarking = false;
 	gui::SelectedSort selected_sort = gui::None, previous_sort = gui::None;
 	gui::SelectedType selected_type = gui::NoType;
+
+	test_vec.reserve(30);
+	for (auto i = 1; i <= 30; i++) {
+		test_vec.push_back(i);
+	}
 
 	// Vector with flags for types of vector that will be benchmarked
 	bool checkup_vector[gui::NumOfTypes] = {false};
@@ -121,9 +127,9 @@ int main(int argc, char* argv[]) {
 			}
 
 			if (visualization && selected_sort != gui::None) {
-				std::vector<int> vec2 = test_vec;
+				std::shuffle(test_vec.begin(), test_vec.end(), std::default_random_engine());
 				try {
-					simulate_sort(vec2, selected_sort);
+					simulate_sort(test_vec, selected_sort);
 				}
 				catch(ExitSim&) {}
 				sort_txt_rect[previous_sort].setFillColor(sf::Color::White);
@@ -133,19 +139,6 @@ int main(int argc, char* argv[]) {
 			}
 
 			if (benchmarking) {
-				benchmark_int::runtime = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-				benchmark_int::init_test_vectors(size_of_test_benchmark);
-				for (auto i = 0; i < gui::NumOfTypes; i++) {
-					if (checkup_vector[i]) {
-						for (auto j = 0; j < gui::NumOfSorts; j++) {
-							benchmark_int::runtime[j] += benchmark::measure_time(benchmark_int::sort_func[j], benchmark_int::test_vectors[i], sorting::less).count();
-						}
-					}
-				}
-				for (auto runtime : benchmark_int::runtime) {
-					std::cout << runtime << std::endl;
-				}
-
 				// absolutely unnecessary, but so is my life :'), jk, I'm good
 				gui::window.clear();
 				sf::Text loading("LoAdIn'", gui::font);
@@ -155,7 +148,19 @@ int main(int argc, char* argv[]) {
 				loading.setPosition(435, 320);
 				gui::window.draw(loading);
 				gui::window.display();
-				sleep(sf::milliseconds(3309));
+				benchmark_int::runtime = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+				benchmark_int::init_test_vectors(size_of_test_benchmark);
+				for (auto i = 0; i < gui::NumOfTypes; i++) {
+					if (checkup_vector[i]) {
+						for (auto j = 0; j < gui::NumOfSorts; j++) {
+							benchmark_int::runtime[j] += benchmark::measure_time(benchmark_int::sort_func[j], benchmark_int::test_vectors[i], sorting::less).count() * 1000;
+						}
+					}
+				}
+				for (auto runtime : benchmark_int::runtime) {
+					std::cout << runtime << std::endl;
+				}
+
 				try {
 					gui::benchmark_sort(benchmark_int::runtime, sort_txt_rect);
 				}

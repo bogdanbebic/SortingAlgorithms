@@ -182,6 +182,8 @@ void gui::update_simulation() {
 		}
 	}
 	window.clear(sf::Color::Black);
+	// TODO: header 
+	sf::Text header();
 	for (const auto& i : rect_v)
 		window.draw(i);
 	window.draw(exit_sprite);

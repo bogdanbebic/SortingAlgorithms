@@ -45,7 +45,16 @@ void benchmark_int::init_test_vectors(const int n, const int few_sorted_param, c
 
 	std::shuffle(test_vec_random.begin(), test_vec_random.end(), std::default_random_engine(seed));
 
-	// TODO: nearly sorted
+	
+	std::random_device rd;
+	std::mt19937 rng(rd());	// Mersenne-Twister
+	std::uniform_int_distribution<int> uni(2, nearly_sorted_param); // guaranteed unbiased
+	auto random_integer = uni(rng);
+
+	for (auto i = 0U; i < test_vec_nearly_sorted.size() - nearly_sorted_param; i += random_integer) {
+		random_integer = uni(rng);
+		std::shuffle(test_vec_nearly_sorted.begin() + i, test_vec_nearly_sorted.begin() + i + random_integer - 1, std::default_random_engine(seed));
+	}
 	
 	std::shuffle(test_vec_few_distinct.begin(), test_vec_few_distinct.end(), std::default_random_engine(seed));
 

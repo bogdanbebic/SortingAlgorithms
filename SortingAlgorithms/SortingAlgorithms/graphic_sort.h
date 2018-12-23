@@ -185,6 +185,7 @@ namespace  gui_sorting {
 		sf::RectangleShape rect = gui::rect_v[i];
 		gui::rect_v[i].setFillColor(sf::Color::Red);
 		gui::update_simulation();
+		gui::rect_v[i].setFillColor(sf::Color::White);
 		while (i < j) {
 			while (!cmp(pivot, v[i]) && i < j)
 				i++;
@@ -209,7 +210,6 @@ namespace  gui_sorting {
 		gui::changePos(gui::rect_v[start], gui::rect_v[j]);
 		gui::changePos(gui::rect_v[j], rect);
 		gui::update_simulation();
-		gui::rect_v[i].setFillColor(sf::Color::White);
 		return j;
 	}
 

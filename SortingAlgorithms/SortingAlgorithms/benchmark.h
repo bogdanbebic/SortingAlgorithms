@@ -13,7 +13,7 @@ namespace benchmark_int {
 	extern void(*sort_func[gui::NumOfSorts])(std::vector<int>&, bool(*cmp)(const int&, const int&));
 	extern std::vector<double> runtime;
 
-	void init_test_vectors(const int n, const int few_sorted_param = 10, const int nearly_sorted_param = 3);
+	void init_test_vectors(const int n, const int few_sorted_param = 10, const int nearly_sorted_param = 5);
 
 }
 
