@@ -1,7 +1,8 @@
 #pragma once
-#ifndef _SORT_H_
-#define _SORT_H_
+#ifndef _GRAPHIC_SORT_H_
+#define _GRAPHIC_SORT_H_
 #include <vector>
+#include <algorithm>
 #include "graphics.h"
 
 namespace  gui_sorting {
@@ -250,6 +251,109 @@ namespace  gui_sorting {
 	template<typename T>
 	void quick_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
 		quick_recursive<T>(v, 0, static_cast<int>(v.size() - 1), cmp);
+	}
+
+	template<typename T>
+	void bubble_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
+		gui::update_simulation();
+		for (auto i = 0U; i < v.size(); i++) {
+			for (int j = static_cast<int>(v.size()) - 2; j >= 0; j--) {
+				gui::rect_v[j].setFillColor(sf::Color::Red);
+				if ((*cmp)(v[j + 1], v[j])) {
+					auto temp = v[j + 1];
+					v[j + 1] = v[j];
+					v[j] = temp;
+					sf::RectangleShape rect = gui::rect_v[j + 1];
+					gui::changePos(gui::rect_v[j + 1], gui::rect_v[j]);
+					gui::changePos(gui::rect_v[j], rect);
+				}
+				gui::update_simulation();
+				gui::rect_v[j].setFillColor(sf::Color::White);
+			}
+		}
+	}
+
+	template<typename T>
+	void selection_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
+		gui::update_simulation();
+		for (auto i = 0U; i < v.size() - 1; i++) {
+			sf::RectangleShape min_rect = gui::rect_v[i];
+			gui::rect_v[i].setFillColor(sf::Color::Red);
+			auto min = v[i];
+			auto min_index = i;
+			for (auto j = i + 1; j < v.size(); j++) {
+				gui::rect_v[j].setFillColor(sf::Color::Red);
+				if ((*cmp)(v[j], min)) {
+					gui::rect_v[min_index].setFillColor(sf::Color::White);
+					min_rect = gui::rect_v[j];
+					min = v[j];
+					min_index = j;
+				}
+				gui::update_simulation();
+
+				if (min_index != j) {
+					gui::rect_v[j].setFillColor(sf::Color::White);
+				}
+			}
+			gui::changePos(gui::rect_v[min_index], gui::rect_v[i]);
+			gui::changePos(gui::rect_v[i], min_rect);
+			gui::rect_v[min_index].setFillColor(sf::Color::White);
+			gui::update_simulation();
+			gui::rect_v[i].setFillColor(sf::Color::White);
+			v[min_index] = v[i];
+			v[i] = min;
+		}
+	}
+
+	template<typename T>
+	void merge_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
+		gui::update_simulation();
+		for (auto current_size = 1U; current_size <= v.size() - 1; current_size *= 2) {
+			for (auto left_start = 0U; left_start < v.size() - 1; left_start += 2 * current_size) {
+				const auto mid = left_start + current_size - 1 < v.size() - 1 ? left_start + current_size - 1 : static_cast<unsigned>(v.size()) - 1U;
+				auto right_end = left_start + 2 * current_size - 1 < v.size() - 1 ? left_start + 2 * current_size - 1 : static_cast<unsigned>(v.size()) - 1U;
+
+				std::vector<sf::RectangleShape> tmp_rect;
+				tmp_rect.reserve(right_end - left_start + 1);
+				std::vector<T> temp;
+				tmp_rect.reserve(right_end - left_start + 1);
+				temp.reserve(right_end - left_start + 1);
+				auto left_iter = left_start, right_iter = mid + 1;
+				while (left_iter <= mid && right_iter <= right_end) {
+					gui::rect_v[left_iter].setFillColor(sf::Color::Red);
+					gui::rect_v[right_iter].setFillColor(sf::Color::Red);
+					gui::update_simulation();
+					if (!(*cmp)(v[left_iter], v[right_iter])) {
+						gui::rect_v[right_iter].setFillColor(sf::Color::White);
+						tmp_rect.push_back(gui::rect_v[right_iter]);
+						temp.push_back(v[right_iter++]);
+					}
+					else {
+						gui::rect_v[left_iter].setFillColor(sf::Color::White);
+						tmp_rect.push_back(gui::rect_v[left_iter]);
+						temp.push_back(v[left_iter++]);
+					}
+					gui::update_simulation();
+				}
+
+				while (left_iter <= mid) {
+					gui::rect_v[left_iter].setFillColor(sf::Color::White);
+					tmp_rect.push_back(gui::rect_v[left_iter]);
+					temp.push_back(v[left_iter++]);
+				}
+				while (right_iter <= right_end) {
+					gui::rect_v[right_iter].setFillColor(sf::Color::White);
+					tmp_rect.push_back(gui::rect_v[right_iter]);
+					temp.push_back(v[right_iter++]);
+				}
+
+				for (auto i = left_start, j = 0U; i <= right_end; i++) {
+					gui::changePos(gui::rect_v[i], tmp_rect[j]);
+					gui::update_simulation();
+					v[i] = temp[j++];
+				}
+			}
+		}
 	}
 }
 #endif 
