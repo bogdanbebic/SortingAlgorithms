@@ -28,7 +28,7 @@ namespace  sorting {
 	* \param cmp Function that compares two elements (cmp should return lhs < rhs for ascending sort)
 	*/
 	template<typename T>
-	void shell_sort(std::vector<T>& v, bool(*cmp)(const T& lhs,const T& rhs)) {
+	void shell_sort(std::vector<T>& v, bool(*cmp)(const T& lhs, const T& rhs)) {
 		gui::update_simulation();
 		for (int i = 0; i < ciura_gap_sequence.size(); i++) {
 			int gap = ciura_gap_sequence[i];
@@ -63,7 +63,7 @@ namespace  sorting {
 		gui::update_simulation();
 		for (auto i = 1U; i < v.size(); i++) {
 			for (int j = i - 1; j >= 0; j--) {
-			gui::rect_v[j].setFillColor(sf::Color::Red);
+				gui::rect_v[j].setFillColor(sf::Color::Red);
 				if ((*cmp)(v[j + 1], v[j])) {
 					auto temp = v[j];
 					v[j] = v[j + 1];
@@ -72,8 +72,8 @@ namespace  sorting {
 					gui::changePos(gui::rect_v[j], gui::rect_v[j + 1]);
 					gui::changePos(gui::rect_v[j + 1], rect);
 				}
-			gui::update_simulation();
-			gui::rect_v[j].setFillColor(sf::Color::White);
+				gui::update_simulation();
+				gui::rect_v[j].setFillColor(sf::Color::White);
 			}
 		}
 	}
@@ -87,7 +87,7 @@ namespace  sorting {
 	void heap_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
 		// heap creation
 		gui::update_simulation();
-		for(int i = 1; i < v.size(); i++) {
+		for (int i = 1; i < v.size(); i++) {
 			T current_elem = v[i];
 			sf::RectangleShape rect = gui::rect_v[i];
 			gui::rect_v[i].setFillColor(sf::Color::Red);
@@ -105,7 +105,7 @@ namespace  sorting {
 			gui::update_simulation();
 			gui::rect_v[i].setFillColor(sf::Color::White);
 		}
-		for(auto i = v.size() - 1; i >= 1; i--) {
+		for (auto i = v.size() - 1; i >= 1; i--) {
 			// largest element gets pushed to the end
 			// largest element is always at the beginning of the vector due to the heap
 			gui::rect_v[i].setFillColor(sf::Color::Red);
@@ -172,7 +172,7 @@ namespace  sorting {
 					v[i] = v[i - 1];
 					v[i - 1] = tmp;
 					sf::RectangleShape rect = gui::rect_v[i];
-					gui::changePos(gui::rect_v[i], gui::rect_v[i  -  1]);
+					gui::changePos(gui::rect_v[i], gui::rect_v[i - 1]);
 					gui::changePos(gui::rect_v[i - 1], rect);
 					new_start = i;
 				}
@@ -181,6 +181,47 @@ namespace  sorting {
 			}
 			start = new_start;
 		}
+	}
+
+
+	template<typename T>
+	int find_pivot(std::vector<T>& v, int start, int end, bool(*cmp) (const T & lhs, const T & rhs)){
+		auto i = start;
+		auto j = end;
+		T pivot = v[i];
+		while (i < j) {
+			while (!cmp(pivot, v[i]) && i < j)
+				i++;
+			while (cmp(pivot, v[j]))
+				j--;
+			if (i < j) {
+				T tmp = v[i];
+				v[i] = v[j];
+				v[j] = tmp;
+			}
+		}
+		v[start] = v[j];
+		v[j] = pivot;
+		return j;
+	}
+	
+	template<typename T>
+	void quick_recursive(std::vector<T>& v, int start, int end, bool(*cmp) (const T & lhs, const T & rhs)) {
+		if (start < end) {
+			int i = find_pivot(v, start, end, cmp);
+			quick_recursive(v, start, i - 1, cmp);
+			quick_recursive(v, i + 1, end, cmp);
+		}
+	}
+
+	/**
+	* \brief Sorts the given vector of numbers using quick sort
+	* \param v Vector that is sorted
+	* \param cmp Function that compares two elements (cmp should return lhs < rhs for ascending sort)
+	*/
+	template<typename T>
+	void quick_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
+		quick_recursive<T>(v, 0, static_cast<int>(v.size() - 1), cmp);
 	}
 }
 #endif 
