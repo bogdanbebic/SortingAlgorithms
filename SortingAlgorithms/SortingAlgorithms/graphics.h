@@ -25,6 +25,7 @@ namespace gui {
 	extern sf::Texture check_off;
 	extern sf::Texture radio_on;
 	extern sf::Texture radio_off;
+	extern sf::Image img;
 	extern sf::Sprite exit_sprite;
 
 	enum SelectedSort { None = -1, Selection, Bubble, Shaker, Insertion, Shell, Quick, Heap, Merge, NumOfSorts };

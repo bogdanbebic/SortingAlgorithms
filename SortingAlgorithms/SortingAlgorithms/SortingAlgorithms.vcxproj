@@ -129,6 +129,9 @@
     <ClInclude Include="benchmark.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="graphic_sort.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
+    <ClInclude Include="resource2.h" />
     <ClInclude Include="sort.h" />
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +139,12 @@
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sort.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="sa_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SortingAlgorithms.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

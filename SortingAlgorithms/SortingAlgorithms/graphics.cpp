@@ -14,6 +14,7 @@ sf::Texture gui::check_on;
 sf::Texture gui::check_off;
 sf::Texture gui::radio_on;
 sf::Texture gui::radio_off;
+sf::Image gui::img;
 sf::Sprite gui::exit_sprite;
 
 
@@ -32,6 +33,9 @@ void gui::init_graphics()
 	hide_console();
 	window.setFramerateLimit(60);
 	font.loadFromFile("arial.ttf");
+	img.loadFromFile("sa_icon.png");
+
+	window.setIcon(img.getSize().x, img.getSize().y, img.getPixelsPtr());
 
 	start_btn.loadFromFile("start_btn.png");
 	stop_btn.loadFromFile("stop_btn.png");
