@@ -31,7 +31,7 @@ namespace gui {
 	enum SelectedType { NoType = -1, Random, NearlySorted, Sorted, ReverseSorted, FewDistinct, NumOfTypes };
 	const std::string sort_name[NumOfSorts] = { "Selection", "Bubble", "Shaker", "Insertion", "Shell", "Quick", "Heap", "Merge" };
 	const std::string type_name[NumOfTypes] = { "Random", "Nearly Sorted", "Sorted", "Reverse Sorted", "Few Distinct" };
-
+	extern SelectedSort selected_sort;
 	inline void hide_console() {
 		::ShowWindow(::GetConsoleWindow(), SW_HIDE);
 	}
@@ -42,7 +42,8 @@ namespace gui {
 
 	bool is_inside_shape(const sf::Event& e, const sf::RectangleShape& rect);
 
-	void init_sort_texts(std::vector<sf::Text>& texts);
+	void init_graphics();
+	void init_sort_texts(std::vector<sf::Text>& texts, bool is_in_menu);
 	void init_type_texts(std::vector<sf::Text>& texts);
 	void init_radio_btn(std::vector<sf::Sprite>& radio_btn);
 	void init_check_box(std::vector<sf::Sprite>& check);
@@ -58,6 +59,7 @@ namespace gui {
 	void update_simulation();
 	void changePos(sf::RectangleShape& dst, sf::RectangleShape& src);
 
-	void benchmark_sort(std::vector<double>& runtime, std::vector<sf::Text>& text_rects);
+	void display_loading_screen();
+	void benchmark_sort(std::vector<double>& runtime);
 }
 #endif

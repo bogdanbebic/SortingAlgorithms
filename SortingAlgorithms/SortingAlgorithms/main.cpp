@@ -13,18 +13,15 @@ void print_array(std::vector<int>& v) {
 	std::cout << std::endl;
 }
 
-
 std::vector<int> test_vec;
 
 const int size_of_test_benchmark = 1000;
 
 
 int main(int argc, char* argv[]) {
-	gui::hide_console();
-	gui::window.setFramerateLimit(60);
-	gui::font.loadFromFile("arial.ttf");
+	gui::init_graphics();
 	bool visualization = false, benchmarking = false;
-	gui::SelectedSort selected_sort = gui::None, previous_sort = gui::None;
+	gui::SelectedSort previous_sort = gui::None;
 	gui::SelectedType selected_type = gui::NoType;
 
 	test_vec.reserve(30);
@@ -35,55 +32,50 @@ int main(int argc, char* argv[]) {
 	// Vector with flags for types of vector that will be benchmarked
 	bool checkup_vector[gui::NumOfTypes] = {false};
 
-	gui::start_btn.loadFromFile("start_btn.png");
-	gui::stop_btn.loadFromFile("stop_btn.png");
-	gui::exit_btn.loadFromFile("exit_btn.png");
-	gui::check_on.loadFromFile("check_box_on.png");
-	gui::check_off.loadFromFile("check_box_off.png");
-	gui::radio_on.loadFromFile("radio_btn_on.png");
-	gui::radio_off.loadFromFile("radio_btn_off.png");
-
-	sf::RectangleShape separator_line(sf::Vector2f(3, 768));
-	separator_line.setPosition(sf::Vector2f(511, 0));
+	sf::RectangleShape separator_line(sf::Vector2f(4, 768));
+	separator_line.setPosition(sf::Vector2f(505, 70));
 	separator_line.setFillColor(sf::Color::White);
+	sf::RectangleShape separator_line_horizontal(sf::Vector2f(1024, 4));
+	separator_line_horizontal.setPosition(sf::Vector2f(0, 70));
+	separator_line_horizontal.setFillColor(sf::Color::White);
 
 	std::vector<sf::Text> sort_txt_rect;
 	std::vector<sf::Text> sort_txt_type;
-	gui::init_sort_texts(sort_txt_rect);
+	gui::init_sort_texts(sort_txt_rect, true);
 	gui::init_type_texts(sort_txt_type);
 
 	std::vector<sf::Sprite> radio_btn;
 	std::vector<sf::Sprite> check_box;
-
 	gui::init_radio_btn(radio_btn);
 	gui::init_check_box(check_box);
 
-	/*sf::Text header("Selection Menu", font);
-	header.setStyle(sf::Text::Bold);
-	header.setCharacterSize(40);
-	header.setFillColor(sf::Color::White);
-	header.setPosition(350, 5);*/
+	sf::Text menu_header("Sorting Algorithms", gui::font);
+	menu_header.setStyle(sf::Text::Bold);
+	menu_header.setCharacterSize(50);
+	menu_header.setFillColor(sf::Color::Cyan);
+	menu_header.setPosition(300, 5);
 
 	sf::Text sort_header("Simulation", gui::font);
 	sort_header.setStyle(sf::Text::Bold);
 	sort_header.setCharacterSize(40);
-	sort_header.setFillColor(sf::Color::White);
-	sort_header.setPosition(100, 10);
+	sort_header.setFillColor(sf::Color::Cyan);
+	sort_header.setPosition(100, 75);
 
 	sf::Text type_header("Benchmarking", gui::font);
 	type_header.setStyle(sf::Text::Bold);
 	type_header.setCharacterSize(40);
-	type_header.setFillColor(sf::Color::White);
-	type_header.setPosition(600, 10);
+	type_header.setFillColor(sf::Color::Cyan);
+	type_header.setPosition(600, 75);
+
+	sf::Text created_by("Created by: Uros Krstic, Bogdan Bebic", gui::font);
+	created_by.setCharacterSize(20);
+	created_by.setFillColor(sf::Color::Cyan);
+	created_by.setPosition(6, 740);
 
 	sf::Sprite btn_sim(gui::start_btn);
 	btn_sim.setPosition(sf::Vector2f(100, 550));
-
 	sf::Sprite btn_bench(gui::start_btn);
 	btn_bench.setPosition(sf::Vector2f(600, 550));
-
-	gui::exit_sprite.setTexture(gui::exit_btn);
-	gui::exit_sprite.setPosition(sf::Vector2f(850, 50));
 
 	try {
 		while (gui::window.isOpen()) {
@@ -93,18 +85,18 @@ int main(int argc, char* argv[]) {
 					gui::window.close();
 				}
 				if (event.type == sf::Event::MouseButtonPressed) {
-					selected_sort = gui::check_sort(event, sort_txt_rect, radio_btn);
-					if (selected_sort != gui::None) {
-						sort_txt_rect[selected_sort].setFillColor(sf::Color::Cyan);
-						radio_btn[selected_sort].setTexture(gui::radio_on);
-						if (previous_sort != gui::None && previous_sort != selected_sort) {
+					gui::selected_sort = gui::check_sort(event, sort_txt_rect, radio_btn);
+					if (gui::selected_sort != gui::None) {
+						sort_txt_rect[gui::selected_sort].setFillColor(sf::Color::Cyan);
+						radio_btn[gui::selected_sort].setTexture(gui::radio_on);
+						if (previous_sort != gui::None && previous_sort != gui::selected_sort) {
 							sort_txt_rect[previous_sort].setFillColor(sf::Color::White);
 							radio_btn[previous_sort].setTexture(gui::radio_off);
 						}
-						previous_sort = selected_sort;
+						previous_sort = gui::selected_sort;
 					}
 					else {
-						selected_sort = previous_sort;
+						gui::selected_sort = previous_sort;
 					}
 
 					selected_type = gui::check_type(event, sort_txt_type, check_box);
@@ -119,6 +111,7 @@ int main(int argc, char* argv[]) {
 							check_box[selected_type].setTexture(gui::check_on);
 							checkup_vector[selected_type] = true;
 						}
+						
 					}
 					visualization = gui::check_start_btn(event, btn_sim);
 					benchmarking = gui::check_start_btn(event, btn_bench);
@@ -126,10 +119,10 @@ int main(int argc, char* argv[]) {
 				}
 			}
 
-			if (visualization && selected_sort != gui::None) {
+			if (visualization && gui::selected_sort != gui::None) {
 				std::shuffle(test_vec.begin(), test_vec.end(), std::default_random_engine());
 				try {
-					simulate_sort(test_vec, selected_sort);
+					simulate_sort(test_vec, gui::selected_sort);
 				}
 				catch(ExitSim&) {}
 				sort_txt_rect[previous_sort].setFillColor(sf::Color::White);
@@ -139,15 +132,8 @@ int main(int argc, char* argv[]) {
 			}
 
 			if (benchmarking) {
-				// absolutely unnecessary, but so is my life :'), jk, I'm good
 				gui::window.clear();
-				sf::Text loading("LoAdIn'", gui::font);
-				loading.setStyle(sf::Text::Bold);
-				loading.setCharacterSize(40);
-				loading.setFillColor(sf::Color::White);
-				loading.setPosition(435, 320);
-				gui::window.draw(loading);
-				gui::window.display();
+				gui::display_loading_screen();
 				benchmark_int::runtime = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 				benchmark_int::init_test_vectors(size_of_test_benchmark);
 				for (auto i = 0; i < gui::NumOfTypes; i++) {
@@ -162,20 +148,19 @@ int main(int argc, char* argv[]) {
 				}
 
 				try {
-					gui::benchmark_sort(benchmark_int::runtime, sort_txt_rect);
+					gui::benchmark_sort(benchmark_int::runtime);
 				}
 				catch(ExitBenchmark&) {}
 				gui::exit_sprite.setPosition(sf::Vector2f(850, 50));
 				benchmarking = false;
 			}
-
-			
-
 			gui::window.clear();
-			//gui::window.draw(header);
 			gui::window.draw(separator_line);
+			gui::window.draw(separator_line_horizontal);
+			gui::window.draw(menu_header);
 			gui::window.draw(sort_header);
 			gui::window.draw(type_header);
+			gui::window.draw(created_by);
 			gui::update_vec(sort_txt_rect);
 			gui::update_vec(sort_txt_type);
 			gui::window.draw(btn_sim);
@@ -185,8 +170,6 @@ int main(int argc, char* argv[]) {
 			gui::window.display();
 		}
 	}
-	catch (ProgramExit &) {
-		// empty body
-	}
+	catch (ProgramExit &) {}
 	return 0;
 }

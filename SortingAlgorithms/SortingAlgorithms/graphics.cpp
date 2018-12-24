@@ -4,8 +4,9 @@
 #include <string>
 
 std::vector<sf::RectangleShape> gui::rect_v;
-sf::RenderWindow gui::window(sf::VideoMode(1024, 768), "Sorting Algorithms Visualization and Benchmarking");
+sf::RenderWindow gui::window(sf::VideoMode(1024, 768), "Sorting Algorithms Simulation and Benchmarking", sf::Style::Close | sf::Style::Titlebar);
 sf::Font gui::font;
+gui::SelectedSort gui::selected_sort = gui::None;
 sf::Texture gui::start_btn;
 sf::Texture gui::stop_btn;
 sf::Texture gui::exit_btn;
@@ -26,9 +27,27 @@ bool gui::is_inside_shape(const sf::Event& e, const sf::RectangleShape& rect) {
 	return false;
 }
 
-void gui::init_sort_texts(std::vector<sf::Text>& texts)
+void gui::init_graphics()
 {
-	float start_height = 80;
+	hide_console();
+	window.setFramerateLimit(60);
+	font.loadFromFile("arial.ttf");
+
+	start_btn.loadFromFile("start_btn.png");
+	stop_btn.loadFromFile("stop_btn.png");
+	exit_btn.loadFromFile("exit_btn.png");
+	check_on.loadFromFile("check_box_on.png");
+	check_off.loadFromFile("check_box_off.png");
+	radio_on.loadFromFile("radio_btn_on.png");
+	radio_off.loadFromFile("radio_btn_off.png");
+
+	exit_sprite.setTexture(gui::exit_btn);
+	exit_sprite.setPosition(sf::Vector2f(850, 50));
+}
+
+void gui::init_sort_texts(std::vector<sf::Text>& texts, bool is_in_menu)
+{
+	float start_height = is_in_menu ? 140.0F : 80.0F;
 	for(auto i = 0U; i < NumOfSorts; i++) {
 		texts.emplace_back(sf::Text(sort_name[i], font));
 		texts[i].setStyle(sf::Text::Bold);
@@ -39,7 +58,7 @@ void gui::init_sort_texts(std::vector<sf::Text>& texts)
 
 void gui::init_type_texts(std::vector<sf::Text>& texts)
 {
-	float start_height = 80;
+	float start_height = 140;
 	for (auto i = 0U; i < NumOfTypes; i++) {
 		texts.emplace_back(sf::Text(type_name[i], font));
 		texts[i].setStyle(sf::Text::Bold);
@@ -49,7 +68,7 @@ void gui::init_type_texts(std::vector<sf::Text>& texts)
 }
 
 void gui::init_radio_btn(std::vector<sf::Sprite>& radio_btn) {
-	float start_height = 88;
+	float start_height = 148;
 	for (auto i = 0U; i < NumOfSorts; i++) {
 		radio_btn.emplace_back(sf::Sprite(radio_off));
 		radio_btn[i].setPosition(100, start_height + i * 50);
@@ -58,7 +77,7 @@ void gui::init_radio_btn(std::vector<sf::Sprite>& radio_btn) {
 
 void gui::init_check_box(std::vector<sf::Sprite>& check)
 {
-	float start_height = 86;
+	float start_height = 146;
 	for (auto i = 0U; i < NumOfTypes; i++) {
 		check.emplace_back(sf::Sprite(check_off));
 		check[i].setPosition(600, start_height + i * 50);
@@ -135,7 +154,7 @@ void gui::simulate_sort(std::vector<int>& v, gui::SelectedSort selected_sort)
 		rect_v[i].setFillColor(sf::Color::White);
 		rect_v[i].setPosition(static_cast<float>(i * width), static_cast<float>(268 + max_height - rect_v[i].getSize().y));
 	}
-	switch (selected_sort)
+	switch (gui::selected_sort)
 	{
 	case Insertion:
 		gui_sorting::insertion_sort<int>(v, sorting::less);
@@ -182,11 +201,15 @@ void gui::update_simulation() {
 		}
 	}
 	window.clear(sf::Color::Black);
-	// TODO: header 
-	sf::Text header();
+	sf::Text header(sort_name[selected_sort] + " sort", font);
+	header.setPosition(50, 50);
+	header.setStyle(sf::Text::Bold);
+	header.setFillColor(sf::Color::Cyan);
+	header.setCharacterSize(50);
 	for (const auto& i : rect_v)
 		window.draw(i);
 	window.draw(exit_sprite);
+	window.draw(header);
 	window.display();
 	sleep(sf::milliseconds(100));
 }
@@ -196,8 +219,21 @@ void gui::changePos(sf::RectangleShape& dst, sf::RectangleShape& src) {
 	dst.setPosition(sf::Vector2f(dst.getPosition().x, src.getPosition().y));
 }
 
-void gui::benchmark_sort(std::vector<double>& runtime, std::vector<sf::Text>& text_rects) {
+void gui::display_loading_screen()
+{
+	sf::Text loading("LOADING", font);
+	loading.setStyle(sf::Text::Bold);
+	loading.setCharacterSize(40);
+	loading.setFillColor(sf::Color::White);
+	loading.setPosition(420, 320);
+	window.draw(loading);
+	window.display();
+}
+
+void gui::benchmark_sort(std::vector<double>& runtime) {
 	std::vector<sf::Text> time_text;
+	std::vector<sf::Text> sort_rect;
+	init_sort_texts(sort_rect, false);
 	exit_sprite.setPosition(sf::Vector2f(435, 630));
 	float start_height = 80;
 	for (auto i = 0U; i < runtime.size(); i++) {
@@ -208,18 +244,18 @@ void gui::benchmark_sort(std::vector<double>& runtime, std::vector<sf::Text>& te
 	}
 
 	window.clear();
-	update_vec(text_rects);
+	update_vec(sort_rect);
 	update_vec(time_text);
 	sf::Text sorts_header("Sorts:", font);
+	sorts_header.setFillColor(sf::Color::Cyan);
 	sorts_header.setStyle(sf::Text::Bold);
 	sorts_header.setCharacterSize(40);
-	sorts_header.setFillColor(sf::Color::White);
 	sorts_header.setPosition(140, 10);
 	window.draw(sorts_header);
 	sf::Text time_header("Time (ms):", font);
+	time_header.setFillColor(sf::Color::Cyan);
 	time_header.setStyle(sf::Text::Bold);
 	time_header.setCharacterSize(40);
-	time_header.setFillColor(sf::Color::White);
 	time_header.setPosition(640, 10);
 	window.draw(time_header);
 	window.draw(exit_sprite);
