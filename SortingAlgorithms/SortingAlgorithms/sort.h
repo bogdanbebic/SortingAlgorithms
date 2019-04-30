@@ -7,6 +7,17 @@
 namespace  sorting {
 
 	/**
+	* \brief compares two integers
+	* \param lhs first integer
+	* \param rhs second integer
+	* \return true if lhs is smaller than rhs, otherwise returns false
+	*/
+	inline bool less(const int & lhs, const int & rhs) {
+		return lhs < rhs;
+	}
+
+
+	/**
 	 * \brief gap sequence used for shell sort
 	 */
 	extern std::vector<int> ciura_gap_sequence;
@@ -40,12 +51,10 @@ namespace  sorting {
 	template<typename T>
 	void insertion_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
 		for (auto i = 1U; i < v.size(); i++) {
-			for (int j = i - 1; j >= 0; j--) {
-				if ((*cmp)(v[j + 1], v[j])) {
-					auto temp = v[j];
-					v[j] = v[j + 1];
-					v[j + 1] = temp;
-				}
+			for (int j = i - 1; j >= 0 && (*cmp)(v[j + 1], v[j]); j--) {
+				auto temp = v[j];
+				v[j] = v[j + 1];
+				v[j + 1] = temp;
 			}
 		}
 	}
@@ -126,10 +135,64 @@ namespace  sorting {
 		}
 	}
 
+	/**
+	* \brief Function used for finding the pivot, and sorting his position
+	* \param v Vector that is sorted
+	* \param start beginning of the current part of the vector
+	* \param end ending of the current part of the vector
+	* \param cmp Function that compares two elements (cmp should return lhs < rhs for ascending sort)
+	*/
+	template<typename T>
+	int find_pivot(std::vector<T>& v, int start, int end, bool(*cmp) (const T & lhs, const T & rhs)) {
+		auto i = start;
+		auto j = end;
+		T pivot = v[i];
+		while (i < j) {
+			while (!cmp(pivot, v[i]) && i < j)
+				i++;
+			while (cmp(pivot, v[j]))
+				j--;
+			if (i < j) {
+				T tmp = v[i];
+				v[i] = v[j];
+				v[j] = tmp;
+			}
+		}
+		v[start] = v[j];
+		v[j] = pivot;
+		return j;
+	}
+
+	/**
+	* \brief Recursive function used for quick sort
+	* \param v Vector that is sorted
+	* \param start beginning of the current part of the vector
+	* \param end ending of the current part of the vector
+	* \param cmp Function that compares two elements (cmp should return lhs < rhs for ascending sort)
+	*/
+	template<typename T>
+	void quick_recursive(std::vector<T>& v, int start, int end, bool(*cmp) (const T & lhs, const T & rhs)) {
+		if (start < end) {
+			int i = find_pivot(v, start, end, cmp);
+			quick_recursive(v, start, i - 1, cmp);
+			quick_recursive(v, i + 1, end, cmp);
+		}
+	}
+
+	/**
+	* \brief Sorts the given vector of numbers using quick sort
+	* \param v Vector that is sorted
+	* \param cmp Function that compares two elements (cmp should return lhs < rhs for ascending sort)
+	*/
+	template<typename T>
+	void quick_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
+		quick_recursive<T>(v, 0, static_cast<int>(v.size() - 1), cmp);
+	}
+
 	template<typename T>
 	void bubble_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
 		for (auto i = 0U; i < v.size(); i++) {
-			for (int j = v.size() - 2; j >= 0; j--) {
+			for (int j = static_cast<int>(v.size()) - 2; j >= 0; j--) {
 				if ((*cmp)(v[j + 1], v[j])) {
 					auto temp = v[j + 1];
 					v[j + 1] = v[j];
@@ -159,8 +222,8 @@ namespace  sorting {
 	void merge_sort(std::vector<T>& v, bool(*cmp) (const T & lhs, const T & rhs)) {
 		for (auto current_size = 1U; current_size <= v.size() - 1; current_size *= 2) {
 			for (auto left_start = 0U; left_start < v.size() - 1; left_start += 2 * current_size) {
-				const auto mid = std::min(left_start + current_size - 1, v.size() - 1);
-				auto right_end = std::min(left_start + 2 * current_size - 1, v.size() - 1);
+				const auto mid = left_start + current_size - 1 < v.size() - 1 ? left_start + current_size - 1 : static_cast<unsigned>(v.size()) - 1U;
+				auto right_end = left_start + 2 * current_size - 1 < v.size() - 1 ? left_start + 2 * current_size - 1 : static_cast<unsigned>(v.size()) - 1U;
 
 				std::vector<T> temp;
 				temp.reserve(right_end - left_start + 1);
