@@ -32,6 +32,7 @@ int main(int argc, char* argv[]) {
 	// Vector with flags for types of vector that will be benchmarked
 	bool checkup_vector[gui::NumOfTypes] = {false};
 
+
 	sf::RectangleShape separator_line(sf::Vector2f(4, 768));
 	separator_line.setPosition(sf::Vector2f(505, 70));
 	separator_line.setFillColor(sf::Color::White);
